@@ -32,22 +32,37 @@ app.get("/api/hello", function (req, res) {
 
 //to get param from user url
 app.get('/api/:date?', (req, res) => {
+  let newDate = new Date(req.params.date)
   let date;
 
   if(/\D/.test(req.params.date)) {
     date = new Date(req.params.date);
+    res.json ({
+      "unix" : new Date(date).getTime(), "utc" : new Date(date).toUTCString()
+    });
   }else {
-    date = new Date(parseInt(req.params.date))
+    date = new Date(Number.parseInt(req.params.date))
+    res.json ({
+      "unix" : date.getTime(), "utc" : new Date(date).toUTCString()
+    });
   };
 
-  let utcDate = date.toUTCString();
-  let unixDate = date.getTime();
+  // if (newDate.toString() !== undefined) {
+  //   res.json({"unix": new Date().getTime(), "utc": new Date().toUTCString()});
+  // } else {
+  //   res.json({"error": 'Invalid Date'});
+  // }
 
-  res.json ({
-    "unix" : unixDate, "utc" : utcDate
-  });
+  
 });
 
+app.get("/api", (req, res) => {
+  const now  = new Date();
+  res.json({
+    unix: now.getTime(),
+    utc: now.toUTCString(),
+  })
+});
 // listen for requests :)
 var listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
