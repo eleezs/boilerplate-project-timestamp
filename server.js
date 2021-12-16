@@ -31,38 +31,64 @@ app.get("/api/hello", function (req, res) {
 });
 
 //to get param from user url
-app.get('/api/:date?', (req, res) => {
-  let newDate = new Date(req.params.date)
+
+app.get("/api/:date", (req, res) => {
   let date;
-
-  if(/\D/.test(req.params.date)) {
+  if(/^\d+$/.test(req.params.date)){
+    date = new Date(Number.parseInt(req.params.date));
+  }else{
     date = new Date(req.params.date);
-    res.json ({
-      "unix" : new Date(date).getTime(), "utc" : new Date(date).toUTCString()
-    });
-  }else {
-    date = new Date(Number.parseInt(req.params.date))
-    res.json ({
-      "unix" : date.getTime(), "utc" : new Date(date).toUTCString()
-    });
-  };
-
-  // if (newDate.toString() !== undefined) {
-  //   res.json({"unix": new Date().getTime(), "utc": new Date().toUTCString()});
-  // } else {
-  //   res.json({"error": 'Invalid Date'});
-  // }
-
-  
+  }
+  if (date.toString() !== 'Invalid Date') {
+    res.json({unix: date.getTime(), utc: date.toUTCString()});
+  } else {
+    res.json({error: date.toString()});
+  }
 });
 
 app.get("/api", (req, res) => {
-  const now  = new Date();
+  const today  = new Date();
   res.json({
-    unix: now.getTime(),
-    utc: now.toUTCString(),
+    unix: today.getTime(),
+    utc: today.toUTCString(),
   })
 });
+
+
+
+
+// app.get('/api/:date?', (req, res) => {
+//   let newDate = new Date(req.params.date)
+//   let date;
+
+//   if(/\D/.test(req.params.date)) {
+//     date = new Date(req.params.date);
+//     res.json ({
+//       "unix" : new Date(date).getTime(), "utc" : new Date(date).toUTCString()
+//     });
+//   }else {
+//     date = new Date(Number.parseInt(req.params.date))
+//     res.json ({
+//       "unix" : date.getTime(), "utc" : new Date(date).toUTCString()
+//     });
+//   };
+
+//   // if (newDate.toString() !== undefined) {
+//   //   res.json({"unix": new Date().getTime(), "utc": new Date().toUTCString()});
+//   // } else {
+//   //   res.json({"error": 'Invalid Date'});
+//   // }
+
+  
+// });
+
+// app.get("/api", (req, res) => {
+//   const now  = new Date();
+//   res.json({
+//     unix: now.getTime(),
+//     utc: now.toUTCString(),
+//   })
+// });
 // listen for requests :)
 var listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
